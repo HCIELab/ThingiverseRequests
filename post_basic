@@ -2,17 +2,17 @@
 
 ##### USER INPUTS ##########################################
 # thing info -- name, licence and category are mandatory for uploading
-thing_info = "{\"name\":\"placeholder\",\"license\":\"cc\",\"category\":\"Art\"}"
+thing_info = "{\"name\":\"\",\"license\":\"cc\",\"category\":\"Art\"}"
 # Upload files
 K_FILE_NAME = "box.stl"
 
 
 ############################################################
 ### STEP 01: Post a new object 
-### 		 Note: This step will create an empty object 
+### Note: This step will create an empty object 
 
 # Rhino library import
-# import os
+# import osplaceholder
 
 import requests, json 
 
