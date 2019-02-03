@@ -1,0 +1,73 @@
+# Code for making a post to Thingiverse
+
+##### USER INPUTS ##########################################
+# thing info -- name, licence and category are mandatory for uploading
+thing_info = "{\"name\":\"placeholder\",\"license\":\"cc\",\"category\":\"Art\"}"
+# Upload files
+K_FILE_NAME = "box.stl"
+
+
+############################################################
+### STEP 01: Post a new object 
+### 		 Note: This step will create an empty object 
+
+# Rhino library import
+# import os
+
+import requests, json 
+
+# toolbelt is used to encode data for amazon s3 uploading
+from requests_toolbelt import MultipartEncoder
+
+# headers used for steps 1,2 and 4 of HTTP requests
+headers = {
+	"Authorization": "Bearer 10ff57f6e7580997cace5d8476b2679f",
+	"Host": "api.thingiverse.com",
+	"Content-Type": "application/json; charset=utf-8"
+}
+
+# Headers used for steps 1,2 and 4 of HTTP requests
+r= requests.post(url ='https://api.thingiverse.com/things?', headers=headers, data=thing_info)
+
+# Get and convert response data (received in JSON form) to a Dictionary 
+response_text = r.text 
+json_acceptable_string = response_text.replace("'", "\"")
+token = json.loads(json_acceptable_string)
+
+# Convert response data (received in JSON form) to Dictionary 
+object_id = token["id"] # integer
+
+############################################################
+### STEP 02: Tell Thingiverse that you want to upload a file 
+
+# Create empty .stl file 
+payload = "{\"filename\":\"" + K_FILE_NAME + "\"}"
+
+url = 'https://api.thingiverse.com/things/'+str(object_id)+'/files'
+r_2= requests.post(url = url, headers=headers, data=payload)
+
+# Get and convert response data (received in JSON form) to a Dictionary 
+response_text_2 = r_2.text
+json_acceptable_string_2 = response_text_2.replace("'", "\"")
+token_2 = json.loads(json_acceptable_string_2)
+
+
+############################################################
+### STEP 03: upload file to S3
+
+# Make a dictionary containing response data
+f = {}
+for k in token_2["fields"]:
+	f[k] = token_2["fields"][k]
+f['file'] = ('filename', open('box.stl', 'rb'))
+
+m = MultipartEncoder(fields=f)
+
+# Post file
+r_3 = requests.post('https://thingiverse-production-new.s3.amazonaws.com/', data=m, headers={'Content-Type': m.content_type, 'Host': 'thingiverse-production-new.s3.amazonaws.com'})
+
+
+############################################################
+### STEP 04: Finalize upload 
+
+r_4 = requests.post(f['success_action_redirect'], headers=headers)
