@@ -2,17 +2,17 @@
 
 ##### USER INPUTS ##########################################
 # thing info -- name, licence and category are mandatory for uploading
-thing_info = "{\"name\":\"\",\"license\":\"cc\",\"category\":\"Art\"}"
+thing_info = "{\"name\":\"Box\",\"license\":\"cc\",\"category\":\"Art\"}"
 # Upload files
 K_FILE_NAME = "box.stl"
 
 
 ############################################################
 ### STEP 01: Post a new object 
-### Note: This step will create an empty object 
+### 		 Note: This step will create an empty object 
 
 # Rhino library import
-# import osplaceholder
+# import os
 
 import requests, json 
 
@@ -71,3 +71,11 @@ r_3 = requests.post('https://thingiverse-production-new.s3.amazonaws.com/', data
 ### STEP 04: Finalize upload 
 
 r_4 = requests.post(f['success_action_redirect'], headers=headers)
+
+
+
+
+
+
+
+
